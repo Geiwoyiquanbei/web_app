@@ -63,3 +63,30 @@ func GetPostList(limit, offset int64) (data []*models.ApiPostDetail, err error) 
 	}
 	return data, nil
 }
+func GetPostList2(p *models.ParamPostList) (data []*models.ApiPostDetail, err error) {
+	ids, err := redis.GetPostIDsInOrder(p)
+	if len(ids) == 0 {
+		return
+	}
+	if err != nil {
+		return
+	}
+	list, err := mysql.GetPostByOrder(ids)
+	for _, post := range list {
+		user, err := mysql.GetUserByID(post.AuthorID)
+		if err != nil {
+			return nil, err
+		}
+		community, err := mysql.GetCommunity(post.CommunityID)
+		if err != nil {
+			return nil, err
+		}
+		detail := &models.ApiPostDetail{
+			AuthuorName:     user.Username,
+			Post:            post,
+			CommunityDetail: community,
+		}
+		data = append(data, detail)
+	}
+	return data, nil
+}

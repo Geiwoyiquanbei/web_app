@@ -27,13 +27,13 @@ func GetCurrentUserID(c *gin.Context) (userID int64, err error) {
 
 func GetPageInfo(c *gin.Context) (int64, int64) {
 	//获取分页参数
-	offsetStr := c.Query("offset")
-	limitStr := c.Query("limit")
+	pagesetStr := c.Query("page")
+	sizeStr := c.Query("size")
 	var (
-		limit  int64
-		offset int64
+		page int64
+		size int64
 	)
-	offset, _ = strconv.ParseInt(offsetStr, 10, 64)
-	limit, _ = strconv.ParseInt(limitStr, 10, 64)
-	return offset, limit
+	page, _ = strconv.ParseInt(pagesetStr, 10, 64)
+	size, _ = strconv.ParseInt(sizeStr, 10, 64)
+	return page, size
 }
